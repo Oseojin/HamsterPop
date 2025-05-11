@@ -5,13 +5,15 @@ using UnityEngine.UI;
 
 public class TitleMenu : MonoBehaviour
 {
+    public SaveManager SaveManager;
     public GameObject difficultySelector;
     public TMP_Dropdown difficultyDropdown;
     public GameObject continueButton;
 
     public void Start()
     {
-        if (PlayerPrefs.GetString("gameData") == "")
+        SaveManager = FindFirstObjectByType<SaveManager>();
+        if (!SaveManager.ExistSaveData())
         {
             continueButton.SetActive(false);
         }
@@ -31,12 +33,7 @@ public class TitleMenu : MonoBehaviour
     }
     public void OnClickStart()
     {
-        GameData gameData = new GameData();
-        gameData.HamsterList.Add(new HamsterData());
-        gameData.SeedAmount = 4000 * (difficultyDropdown.value + 1);
-        gameData.HamsterAmount = 1;
-        PlayerPrefs.SetString("gameData", JsonUtility.ToJson(gameData));
-        SceneManager.LoadScene("GameScene");
+        SaveManager.NewGame(difficultyDropdown.value + 1);
     }
     public void OnClickExit()
     {
